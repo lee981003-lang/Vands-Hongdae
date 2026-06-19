@@ -1,20 +1,36 @@
-import { RefreshCw } from "lucide-react";
+import { useState } from "react";
+import { LogOut, RefreshCw } from "lucide-react";
 import vandsLogo from "./assets/vands-logo.png";
 import { Dashboard } from "./components/Dashboard";
+import { LoginScreen } from "./components/LoginScreen";
 import { SummaryBar } from "./components/SummaryBar";
 import { Toast } from "./components/Toast";
+import { useAuth, type AppRole } from "./hooks/useAuth";
 import { useBeds } from "./hooks/useBeds";
 import { useNow } from "./hooks/useNow";
 
-export function App() {
+type AdminTab = "dashboard" | "accounts" | "rooms" | "history" | "pin";
+
+const ADMIN_TABS: Array<{ id: AdminTab; label: string; description?: string }> = [
+  { id: "dashboard", label: "대시보드" },
+  { id: "accounts", label: "계정 관리", description: "계정 생성과 비밀번호 변경은 Edge Function 연결 후 활성화됩니다." },
+  { id: "rooms", label: "룸/베드 설정", description: "룸 이름과 베드 수 설정은 준비 중입니다." },
+  { id: "history", label: "시술 기록", description: "완료 내역과 평균 대기 시간 조회는 준비 중입니다." },
+  { id: "pin", label: "PIN 설정", description: "처방 및 후불 잠금 PIN 설정은 준비 중입니다." },
+];
+
+function DashboardShell({ role, onSignOut }: { role: AppRole; onSignOut: () => Promise<void> }) {
   const now = useNow();
   const beds = useBeds();
+  const [activeTab, setActiveTab] = useState<AdminTab>("dashboard");
+  const isAdmin = role === "admin";
+  const activeAdminTab = ADMIN_TABS.find((tab) => tab.id === activeTab) ?? ADMIN_TABS[0];
 
   return (
     <main className="app-shell">
       <header className="topbar">
-        <div className="brand-block" aria-label="브랜드">
-          <img src={vandsLogo} alt="홍대 밴스피부과의원" />
+        <div className="brand-block" aria-label="Vands 홍대">
+          <img src={vandsLogo} alt="Vands 홍대" />
         </div>
         <SummaryBar beds={beds.beds} now={now} />
         <div className="topbar-actions">
@@ -22,26 +38,66 @@ export function App() {
             <span>{new Intl.DateTimeFormat("ko-KR", { hour: "2-digit", minute: "2-digit", hour12: false }).format(now)}</span>
             <small>실시간 업데이트</small>
           </div>
-          <button className="icon-text-button" type="button" onClick={beds.refresh} disabled={beds.loading}>
+          <button className="icon-button" type="button" onClick={beds.refresh} disabled={beds.loading} title="새로고침" aria-label="새로고침">
             <RefreshCw size={18} aria-hidden="true" />
-            새로고침
+          </button>
+          <button className="icon-button" type="button" onClick={() => void onSignOut()} title="로그아웃" aria-label="로그아웃">
+            <LogOut size={18} aria-hidden="true" />
           </button>
         </div>
       </header>
 
-      <Dashboard
-        beds={beds.beds}
-        rooms={beds.rooms}
-        connection={beds.connection}
-        loading={beds.loading}
-        now={now}
-        onSetStatus={beds.setStatus}
-        onSetDetails={beds.setDetails}
-        onSetFlags={beds.setFlags}
-        onSetMemo={beds.setMemo}
-      />
+      {isAdmin ? (
+        <nav className="admin-tabs" aria-label="관리자 메뉴" role="tablist">
+          {ADMIN_TABS.map((tab) => (
+            <button
+              className={tab.id === activeTab ? "admin-tabs__tab admin-tabs__tab--active" : "admin-tabs__tab"}
+              type="button"
+              role="tab"
+              aria-selected={tab.id === activeTab}
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </nav>
+      ) : null}
+
+      {activeTab === "dashboard" ? (
+        <Dashboard
+          beds={beds.beds}
+          rooms={beds.rooms}
+          connection={beds.connection}
+          loading={beds.loading}
+          now={now}
+          onSetStatus={beds.setStatus}
+          onSetFlags={beds.setFlags}
+          onSetFollowUp={beds.setFollowUp}
+          onSetMemo={beds.setMemo}
+        />
+      ) : (
+        <section className="admin-placeholder" role="tabpanel" aria-label={activeAdminTab.label}>
+          <h1>{activeAdminTab.label}</h1>
+          <p>{activeAdminTab.description}</p>
+        </section>
+      )}
 
       {beds.message ? <Toast message={beds.message} tone={beds.messageTone} onClose={beds.clearMessage} /> : null}
     </main>
   );
+}
+
+export function App() {
+  const auth = useAuth();
+
+  if (!auth.ready) {
+    return <main className="auth-shell" aria-busy="true" />;
+  }
+
+  if (!auth.session && !auth.isDevelopmentFallback) {
+    return <LoginScreen onSignIn={auth.signIn} />;
+  }
+
+  return <DashboardShell role={auth.role} onSignOut={auth.signOut} />;
 }

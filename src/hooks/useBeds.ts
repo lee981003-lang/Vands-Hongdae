@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { fallbackBeds, fallbackRooms } from "../data/fallbackBeds";
 import { hasSupabaseConfig, supabase } from "../lib/supabase";
 import { applyLocalStatus } from "../lib/time";
-import type { Bed, BedDetailsInput, BedFlagsInput, BedMemoInput, BedStatus, ConnectionState, Room } from "../types";
+import type { Bed, BedFlagsInput, BedMemoInput, BedStatus, ConnectionState, Room } from "../types";
 
 type MessageTone = "info" | "success" | "error";
 
@@ -110,35 +110,6 @@ export function useBeds() {
     [beds, showMessage, updateBed],
   );
 
-  const setDetails = useCallback(
-    async (bed: Bed, input: BedDetailsInput) => {
-      const now = new Date().toISOString();
-      const previous = beds;
-      updateBed(bed.id, (current) => ({
-        ...current,
-        customer_name: input.customerName.trim() || null,
-        treatment_name: input.treatmentName.trim() || null,
-        updated_at: now,
-      }));
-
-      if (!supabase) return;
-
-      const { error } = await supabase.rpc("set_bed_details", {
-        p_bed_id: bed.id,
-        p_customer_name: input.customerName.trim() || null,
-        p_treatment_name: input.treatmentName.trim() || null,
-      });
-
-      if (error) {
-        setBeds(previous);
-        showMessage(getErrorMessage(error), "error");
-      } else {
-        showMessage("고객 정보가 저장되었습니다.", "success");
-      }
-    },
-    [beds, showMessage, updateBed],
-  );
-
   const setFlags = useCallback(
     async (bed: Bed, input: BedFlagsInput) => {
       const now = new Date().toISOString();
@@ -154,9 +125,34 @@ export function useBeds() {
 
       const { error } = await supabase.rpc("set_bed_flags", {
         p_bed_id: bed.id,
-        p_pin: input.pin ?? "",
+        p_pin: "",
         p_prescription_status: input.prescriptionStatus,
         p_postpay_status: input.postpayStatus,
+      });
+
+      if (error) {
+        setBeds(previous);
+        showMessage(getErrorMessage(error), "error");
+      }
+    },
+    [beds, showMessage, updateBed],
+  );
+
+  const setFollowUp = useCallback(
+    async (bed: Bed, isFollowUp: boolean) => {
+      const now = new Date().toISOString();
+      const previous = beds;
+      updateBed(bed.id, (current) => ({
+        ...current,
+        is_follow_up: isFollowUp,
+        updated_at: now,
+      }));
+
+      if (!supabase) return;
+
+      const { error } = await supabase.rpc("set_bed_follow_up", {
+        p_bed_id: bed.id,
+        p_is_follow_up: isFollowUp,
       });
 
       if (error) {
@@ -181,7 +177,6 @@ export function useBeds() {
 
       const { error } = await supabase.rpc("set_bed_memo", {
         p_bed_id: bed.id,
-        p_pin: input.pin ?? "",
         p_memo: input.memo.trim() || null,
       });
 
@@ -206,8 +201,8 @@ export function useBeds() {
       refresh,
       clearMessage,
       setStatus,
-      setDetails,
       setFlags,
+      setFollowUp,
       setMemo,
     }),
     [
@@ -220,8 +215,8 @@ export function useBeds() {
       refresh,
       clearMessage,
       setStatus,
-      setDetails,
       setFlags,
+      setFollowUp,
       setMemo,
     ],
   );

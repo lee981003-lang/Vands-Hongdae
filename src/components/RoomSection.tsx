@@ -1,12 +1,12 @@
 import { BedCard } from "./BedCard";
-import type { Bed, BedDetailsInput, BedFlagsInput, BedMemoInput, BedStatus, RoomWithBeds } from "../types";
+import type { Bed, BedFlagsInput, BedMemoInput, BedStatus, RoomWithBeds } from "../types";
 
 interface RoomSectionProps {
   room: RoomWithBeds;
   now: number;
   onSetStatus: (bed: Bed, status: BedStatus) => Promise<void>;
-  onSetDetails: (bed: Bed, input: BedDetailsInput) => Promise<void>;
   onSetFlags: (bed: Bed, input: BedFlagsInput) => Promise<void>;
+  onSetFollowUp: (bed: Bed, isFollowUp: boolean) => Promise<void>;
   onSetMemo: (bed: Bed, input: BedMemoInput) => Promise<void>;
 }
 
@@ -19,7 +19,7 @@ function roomClassName(name: string) {
   return "room-section--default";
 }
 
-export function RoomSection({ room, now, onSetStatus, onSetDetails, onSetFlags, onSetMemo }: RoomSectionProps) {
+export function RoomSection({ room, now, onSetStatus, onSetFlags, onSetFollowUp, onSetMemo }: RoomSectionProps) {
   return (
     <section className={`room-section ${roomClassName(room.name)}`}>
       <div className="room-heading">
@@ -32,8 +32,8 @@ export function RoomSection({ room, now, onSetStatus, onSetDetails, onSetFlags, 
             bed={bed}
             now={now}
             onSetStatus={onSetStatus}
-            onSetDetails={onSetDetails}
             onSetFlags={onSetFlags}
+            onSetFollowUp={onSetFollowUp}
             onSetMemo={onSetMemo}
           />
         ))}

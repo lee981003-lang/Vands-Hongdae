@@ -26,10 +26,12 @@ export const fallbackBeds: Bed[] = roomSpecs.flatMap(([roomId, , labels]) =>
       sort_order: index + 1,
       status: "empty",
       status_started_at: null,
+      waiting_started_at: null,
       customer_name: null,
       treatment_name: null,
       prescription_status: "none",
       postpay_status: "none",
+      is_follow_up: false,
       memo: null,
       updated_at: sampleStartedAt(0),
     } satisfies Bed;
@@ -51,6 +53,8 @@ export const fallbackBeds: Bed[] = roomSpecs.flatMap(([roomId, , labels]) =>
         ...base,
         status: "waiting",
         status_started_at: sampleStartedAt(34),
+        waiting_started_at: sampleStartedAt(34),
+        is_follow_up: true,
         customer_name: "이서연",
         treatment_name: "토닝",
         postpay_status: "pending",
@@ -60,10 +64,10 @@ export const fallbackBeds: Bed[] = roomSpecs.flatMap(([roomId, , labels]) =>
     if (roomId === "care" && index === 4) {
       return {
         ...base,
-        status: "reanesthesia_bed",
+        status: "in_treatment",
         status_started_at: sampleStartedAt(9),
         customer_name: "박지훈",
-        treatment_name: "수면 재마취",
+        treatment_name: "관리",
       } satisfies Bed;
     }
 

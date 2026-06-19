@@ -1,52 +1,43 @@
-import { AlarmClock, UsersRound } from "lucide-react";
-import { elapsedMinutes, formatRemaining, remainingMinutes } from "../lib/time";
+import { AlarmClock } from "lucide-react";
+import { elapsedMinutes, formatElapsed, statusLabel, warningLevel } from "../lib/time";
 import type { Bed } from "../types";
 
 interface SidePanelProps {
-  title: string;
   beds: Bed[];
   roomNames: Map<string, string>;
   now: number;
-  tone: "orange" | "blue";
 }
 
-function panelIcon(tone: SidePanelProps["tone"]) {
-  return tone === "orange" ? AlarmClock : UsersRound;
-}
-
-export function SidePanel({ title, beds, roomNames, now, tone }: SidePanelProps) {
-  const Icon = panelIcon(tone);
+export function SidePanel({ beds, roomNames, now }: SidePanelProps) {
   const visibleBeds = beds.slice(0, 4);
 
   return (
-    <section className="side-panel">
-      <h2>{title}</h2>
+    <section className="side-panel side-panel--elapsed">
+      <h2>경과 알림</h2>
       <div className="side-list">
         {visibleBeds.length === 0 ? (
-          <p className="side-empty">표시할 항목이 없습니다.</p>
+          <p className="side-empty">경과 알림이 없습니다.</p>
         ) : (
           visibleBeds.map((bed) => {
-            const remaining = remainingMinutes(elapsedMinutes(bed.status_started_at, now), bed.status);
+            const elapsed = elapsedMinutes(bed.status_started_at, now);
+            const tone = warningLevel(elapsed) === 2 ? "red" : "orange";
             return (
-              <article className="side-list-item" key={bed.id}>
+              <article className={`side-list-item side-list-item--${tone}`} key={bed.id}>
                 <span className={`side-icon side-icon--${tone}`}>
-                  <Icon size={18} aria-hidden="true" />
+                  <AlarmClock size={18} aria-hidden="true" />
                 </span>
                 <div>
                   <strong>
                     {roomNames.get(bed.room_id)} {bed.label}
                   </strong>
-                  <span>{bed.treatment_name || bed.customer_name || "대기 1명"}</span>
+                  <span>{statusLabel(bed.status)}</span>
                 </div>
-                <em>{formatRemaining(remaining, bed.status)}</em>
+                <em>{formatElapsed(elapsed)}</em>
               </article>
             );
           })
         )}
       </div>
-      <button className="side-more" type="button">
-        전체 보기
-      </button>
     </section>
   );
 }
