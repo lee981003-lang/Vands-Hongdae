@@ -9,7 +9,8 @@ function roleFromSession(session: Session | null): AppRole {
 }
 
 function loginEmail(loginId: string) {
-  return `${loginId.trim().toLowerCase()}@vands.local`;
+  const trimmed = loginId.trim().toLowerCase();
+  return trimmed.includes("@") ? trimmed : `${trimmed}@vands.local`;
 }
 
 export function useAuth() {
@@ -58,7 +59,8 @@ export function useAuth() {
   const signOut = useCallback(async () => {
     const client = supabase;
     if (!client) return;
-    await client.auth.signOut();
+    await client.auth.signOut({ scope: "local" });
+    setSession(null);
   }, []);
 
   return useMemo(
