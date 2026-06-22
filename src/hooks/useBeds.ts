@@ -125,7 +125,6 @@ export function useBeds() {
 
       const { error } = await supabase.rpc("set_bed_flags", {
         p_bed_id: bed.id,
-        p_pin: "",
         p_prescription_status: input.prescriptionStatus,
         p_postpay_status: input.postpayStatus,
       });

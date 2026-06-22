@@ -1004,6 +1004,258 @@ button:focus-visible {
   font-weight: 700;
 }
 
+.admin-accounts {
+  display: grid;
+  gap: 18px;
+  padding-top: 22px;
+}
+
+.admin-accounts__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.admin-card {
+  display: grid;
+  gap: 14px;
+  border: 1px solid #e1e7ef;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.94);
+  padding: 20px;
+  box-shadow: 0 10px 28px rgba(17, 24, 39, 0.04);
+}
+
+.admin-card__heading {
+  display: grid;
+  gap: 5px;
+}
+
+.admin-card__heading h1 {
+  color: #101828;
+  font-size: 18px;
+}
+
+.admin-card__heading p,
+.admin-accounts__empty {
+  color: #667085;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.admin-card label {
+  display: grid;
+  gap: 7px;
+  color: #344054;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.admin-card label span {
+  color: #98a2b3;
+  font-size: 11px;
+}
+
+.admin-card input,
+.admin-card select {
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid #cfd6e1;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #101828;
+  padding: 0 11px;
+}
+
+.admin-card__button {
+  justify-self: start;
+  min-height: 38px;
+  border: 1px solid #d0d7e2;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #344054;
+  padding: 0 13px;
+  font-weight: 800;
+}
+
+.admin-card__button--primary {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.admin-card__button--danger {
+  border-color: #dc2626;
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.admin-accounts__list {
+  gap: 16px;
+}
+
+.admin-accounts__list-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.admin-accounts__table-wrap {
+  overflow-x: auto;
+}
+
+.admin-accounts table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.admin-accounts th,
+.admin-accounts td {
+  border-top: 1px solid #edf0f4;
+  padding: 11px 10px;
+  color: #344054;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.admin-accounts th {
+  color: #667085;
+  font-size: 12px;
+}
+
+.activity-log {
+  display: grid;
+  gap: 16px;
+  padding-top: 22px;
+}
+
+.activity-log__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.activity-log__heading h1 {
+  color: #101828;
+  font-size: 18px;
+}
+
+.activity-log__heading p,
+.activity-log__empty {
+  color: #667085;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.activity-log__table-wrap {
+  overflow-x: auto;
+  border: 1px solid #e1e7ef;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.activity-log table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.activity-log th,
+.activity-log td {
+  border-top: 1px solid #edf0f4;
+  padding: 12px 14px;
+  color: #344054;
+  text-align: left;
+  vertical-align: top;
+}
+
+.activity-log th {
+  border-top: 0;
+  color: #667085;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.activity-log td:last-child {
+  min-width: 280px;
+}
+
+.room-bed-settings {
+  display: grid;
+  gap: 16px;
+  padding-top: 22px;
+}
+
+.room-bed-settings__heading,
+.room-bed-settings__room-header,
+.room-bed-settings__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.room-bed-settings__heading,
+.room-bed-settings__room-header {
+  justify-content: space-between;
+}
+
+.room-bed-settings__heading h1 {
+  color: #101828;
+  font-size: 18px;
+}
+
+.room-bed-settings__heading p,
+.room-bed-settings__empty {
+  color: #667085;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.room-bed-settings__create-room,
+.room-bed-settings__create-bed,
+.room-bed-settings__rename {
+  display: flex;
+  align-items: end;
+  gap: 10px;
+}
+
+.room-bed-settings__rename label,
+.room-bed-settings__create-room label,
+.room-bed-settings__create-bed label {
+  flex: 1;
+}
+
+.room-bed-settings__list,
+.room-bed-settings__beds {
+  display: grid;
+  gap: 14px;
+}
+
+.room-bed-settings__room {
+  gap: 16px;
+}
+
+.room-bed-settings__beds {
+  gap: 8px;
+}
+
+.room-bed-settings__bed {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid #edf0f4;
+  padding-top: 12px;
+}
+
+.room-bed-settings__actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
 .side-icon--red {
   background: #fff0f0;
   color: #b91c1c;
@@ -1108,4 +1360,23 @@ button:focus-visible {
   .login-panel {
     padding: 24px;
   }
+
+  .admin-accounts__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .room-bed-settings__heading,
+  .room-bed-settings__room-header,
+  .room-bed-settings__bed,
+  .room-bed-settings__create-room,
+  .room-bed-settings__create-bed,
+  .room-bed-settings__rename {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .room-bed-settings__actions {
+    justify-content: flex-start;
+  }
+
 }

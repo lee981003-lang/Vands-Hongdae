@@ -42,3 +42,24 @@ Supabase 대시보드에서 **Authentication → Users → 대상 사용자**를
 - 환경 변수를 변경했다면 새 빌드·배포에 반영됐는지 확인합니다.
 
 Supabase 환경 변수가 없으면 로컬 목업 데이터로 화면과 타이머 동작을 확인할 수 있습니다.
+
+## Edge Function 배포 (admin-users)
+
+계정 생성·비밀번호 변경은 `admin-users` Edge Function이 처리합니다. Supabase CLI를 인증한 뒤, 배포 대상 프로젝트를 확인하고 함수를 배포합니다.
+
+```bash
+supabase projects list
+supabase functions deploy admin-users --project-ref qcbtbgfiojgjkvegihhu --no-verify-jwt
+```
+
+함수는 요청의 JWT를 내부에서 검증하고 관리자(`app_metadata.role === "admin"`)만 허용합니다. `--no-verify-jwt`는 CORS preflight와 함수 내부 검증을 함께 사용하기 위한 설정이며, 인증을 생략하는 설정이 아닙니다.
+
+배포된 Edge Function에는 `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`가 기본 시크릿으로 주입됩니다. 로컬 실행에서만 `supabase/functions/.env`에 두 값을 설정합니다. `SUPABASE_SERVICE_ROLE_KEY`는 서버 전용 비밀값이므로 `VITE_` 환경변수·프런트엔드 소스·클라이언트 번들에 절대 넣지 마세요.
+
+## 활동 로그 정리
+
+활동 로그는 30일간 보관합니다. pg_cron을 사용하지 않는 현재 운영 환경에서는 Supabase SQL Editor에서 아래 함수를 수동 실행해 오래된 기록을 삭제합니다.
+
+```sql
+select private.purge_activity_log();
+```

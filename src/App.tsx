@@ -2,6 +2,9 @@ import { useState } from "react";
 import { LogOut, RefreshCw } from "lucide-react";
 import vandsLogo from "./assets/vands-logo.png";
 import { Dashboard } from "./components/Dashboard";
+import { AdminAccounts } from "./components/AdminAccounts";
+import { ActivityLog } from "./components/ActivityLog";
+import { RoomBedSettings } from "./components/RoomBedSettings";
 import { LoginScreen } from "./components/LoginScreen";
 import { SummaryBar } from "./components/SummaryBar";
 import { Toast } from "./components/Toast";
@@ -9,14 +12,14 @@ import { useAuth, type AppRole } from "./hooks/useAuth";
 import { useBeds } from "./hooks/useBeds";
 import { useNow } from "./hooks/useNow";
 
-type AdminTab = "dashboard" | "accounts" | "rooms" | "history" | "pin";
+type AdminTab = "dashboard" | "accounts" | "rooms" | "history" | "activity";
 
 const ADMIN_TABS: Array<{ id: AdminTab; label: string; description?: string }> = [
   { id: "dashboard", label: "대시보드" },
   { id: "accounts", label: "계정 관리", description: "계정 생성과 비밀번호 변경은 Edge Function 연결 후 활성화됩니다." },
-  { id: "rooms", label: "룸/베드 설정", description: "룸 이름과 베드 수 설정은 준비 중입니다." },
+  { id: "rooms", label: "룸/베드 설정" },
   { id: "history", label: "시술 기록", description: "완료 내역과 평균 대기 시간 조회는 준비 중입니다." },
-  { id: "pin", label: "PIN 설정", description: "처방 및 후불 잠금 PIN 설정은 준비 중입니다." },
+  { id: "activity", label: "활동 로그" },
 ];
 
 function DashboardShell({ role, onSignOut }: { role: AppRole; onSignOut: () => Promise<void> }) {
@@ -76,6 +79,12 @@ function DashboardShell({ role, onSignOut }: { role: AppRole; onSignOut: () => P
           onSetFollowUp={beds.setFollowUp}
           onSetMemo={beds.setMemo}
         />
+      ) : activeTab === "accounts" ? (
+        <AdminAccounts />
+      ) : activeTab === "activity" ? (
+        <ActivityLog />
+      ) : activeTab === "rooms" ? (
+        <RoomBedSettings rooms={beds.rooms} beds={beds.beds} loading={beds.loading} refresh={beds.refresh} />
       ) : (
         <section className="admin-placeholder" role="tabpanel" aria-label={activeAdminTab.label}>
           <h1>{activeAdminTab.label}</h1>

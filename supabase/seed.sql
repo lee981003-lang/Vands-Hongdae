@@ -54,7 +54,3 @@ from public.rooms
 cross join generate_series(1, 10) as generated(label)
 where rooms.name = '관리실'
 on conflict (room_id, label) do update set sort_order = excluded.sort_order;
-
-insert into public.admin_settings (id, pin_hash)
-values (1, crypt('1234', gen_salt('bf')))
-on conflict (id) do nothing;
