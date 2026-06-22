@@ -1,5 +1,5 @@
 import { readFile, writeFile } from "node:fs/promises";
-import { extname, join } from "node:path";
+import { dirname, extname, join } from "node:path";
 
 const distIndex = await readFile("dist/index.html", "utf8");
 const scriptMatch = distIndex.match(/<script[^>]+src="(.+?)"><\/script>/);
@@ -17,6 +17,7 @@ const css = await readFile(join("dist", stylePath), "utf8");
 const assetPattern = /["']\.\/assets\/([^"']+\.(?:png|jpg|jpeg|webp|svg))["']/g;
 const importMetaAssetPattern = /new URL\(["']([^"']+\.(?:png|jpg|jpeg|webp|svg))["'],import\.meta\.url\)\.href/g;
 let bundledJs = js;
+let bundledCss = css;
 
 async function assetDataUrl(fileName) {
   const asset = await readFile(join("dist", "assets", fileName));
@@ -35,13 +36,19 @@ for (const match of js.matchAll(importMetaAssetPattern)) {
   bundledJs = bundledJs.replaceAll(match[0], `"${dataUrl}"`);
 }
 
+const fontPattern = /url\((['"]?)(\.\/[^)'"\s]+\.woff2)\1\)/g;
+for (const match of css.matchAll(fontPattern)) {
+  const font = await readFile(join("dist", dirname(stylePath), match[2]));
+  bundledCss = bundledCss.replaceAll(match[0], `url("data:font/woff2;base64,${font.toString("base64")}")`);
+}
+
 const html = `<!doctype html>
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>실시간 시술 현황 대시보드</title>
-    <style>${css}</style>
+    <style>${bundledCss}</style>
   </head>
   <body>
     <div id="root"></div>
