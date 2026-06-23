@@ -5,6 +5,7 @@ import { Dashboard } from "./components/Dashboard";
 import { AdminAccounts } from "./components/AdminAccounts";
 import { ActivityLog } from "./components/ActivityLog";
 import { RoomBedSettings } from "./components/RoomBedSettings";
+import { ProcedureHistory } from "./components/ProcedureHistory";
 import { LoginScreen } from "./components/LoginScreen";
 import { SummaryBar } from "./components/SummaryBar";
 import { Toast } from "./components/Toast";
@@ -85,6 +86,8 @@ function DashboardShell({ role, onSignOut }: { role: AppRole; onSignOut: () => P
         <ActivityLog />
       ) : activeTab === "rooms" ? (
         <RoomBedSettings rooms={beds.rooms} beds={beds.beds} loading={beds.loading} refresh={beds.refresh} />
+      ) : activeTab === "history" ? (
+        <ProcedureHistory />
       ) : (
         <section className="admin-placeholder" role="tabpanel" aria-label={activeAdminTab.label}>
           <h1>{activeAdminTab.label}</h1>

@@ -114,6 +114,48 @@ export function nextBedStatus(status: BedStatus): BedStatus {
   return "empty";
 }
 
+// --- 달력 날짜 헬퍼 (KST 기준) ---
+// 시각·UTC 차이 없이 연·월·일만 비교하기 위해, 모든 날짜를 로컬 자정 Date로 정규화해 사용한다.
+
+const KST_PARTS = new Intl.DateTimeFormat("en-CA", {
+  timeZone: "Asia/Seoul",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+
+/** KST 기준 "오늘"을 로컬 자정 Date로 반환한다. */
+export function kstToday(): Date {
+  // en-CA 로케일은 YYYY-MM-DD 형식을 보장한다.
+  const [year, month, day] = KST_PARTS.format(new Date()).split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+/** 시각 정보를 제거한 로컬 자정 Date로 정규화한다. */
+export function startOfDay(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+/** 같은 달력 날짜(연·월·일)인지 비교한다. */
+export function isSameDay(a: Date, b: Date): boolean {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+}
+
+/** 달력 날짜에 일수를 더한 새 Date를 반환한다(자정 기준). */
+export function addDays(date: Date, amount: number): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate() + amount);
+}
+
+/** a < b(날짜 단위)이면 true. */
+export function isBeforeDay(a: Date, b: Date): boolean {
+  return startOfDay(a).getTime() < startOfDay(b).getTime();
+}
+
+/** 두 날짜 사이의 일수 차(b - a). 음수 가능. */
+export function dayDiff(a: Date, b: Date): number {
+  return Math.round((startOfDay(b).getTime() - startOfDay(a).getTime()) / 86_400_000);
+}
+
 export function applyLocalStatus(bed: Bed, status: BedStatus): Bed {
   const now = new Date().toISOString();
 
