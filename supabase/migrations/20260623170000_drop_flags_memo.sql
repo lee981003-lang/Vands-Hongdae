@@ -79,7 +79,7 @@ end;
 $$;
 
 drop function if exists private.set_bed_flags(uuid, text, text);
-drop function if exists public.set_bed_flags(uuid, text, text, text);
+drop function if exists public.set_bed_flags(uuid, text, text);
 drop function if exists private.set_bed_memo(uuid, text);
 drop function if exists public.set_bed_memo(uuid, text);
 
