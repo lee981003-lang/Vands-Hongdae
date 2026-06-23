@@ -58,10 +58,23 @@ function formatDate(value: string) {
   return new Intl.DateTimeFormat("ko-KR", { dateStyle: "short", timeStyle: "short" }).format(new Date(value));
 }
 
+function getKstToday() {
+  const parts = new Intl.DateTimeFormat("en", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const value = (type: Intl.DateTimeFormatPartTypes) => parts.find((part) => part.type === type)?.value;
+
+  return `${value("year")}-${value("month")}-${value("day")}`;
+}
+
 export function ActivityLog() {
   const [entries, setEntries] = useState<ActivityLogEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState("");
 
   const load = useCallback(async () => {
     if (!supabase) {
@@ -72,7 +85,11 @@ export function ActivityLog() {
 
     setLoading(true);
     setError(null);
-    const { data, error: rpcError } = await supabase.rpc("get_activity_log", { p_limit: 50, p_offset: 0 });
+    const { data, error: rpcError } = await supabase.rpc("get_activity_log", {
+      p_limit: 50,
+      p_offset: 0,
+      p_date: selectedDate || null,
+    });
 
     if (rpcError) {
       setError("활동 로그를 불러올 수 없습니다.");
@@ -81,7 +98,7 @@ export function ActivityLog() {
     }
 
     setLoading(false);
-  }, []);
+  }, [selectedDate]);
 
   useEffect(() => {
     void load();
@@ -94,12 +111,19 @@ export function ActivityLog() {
           <h1>활동 로그</h1>
           <p>최근 베드 상태와 정보 변경 이력입니다.</p>
         </div>
-        <button className="admin-card__button" type="button" onClick={() => void load()} disabled={loading}>새로고침</button>
+        <div>
+          <label>
+            날짜 선택
+            <input type="date" value={selectedDate} max={getKstToday()} onChange={(event) => setSelectedDate(event.target.value)} />
+          </label>
+          <button className="admin-card__button" type="button" onClick={() => setSelectedDate("")} disabled={loading || !selectedDate}>전체 보기</button>
+          <button className="admin-card__button" type="button" onClick={() => void load()} disabled={loading}>새로고침</button>
+        </div>
       </div>
 
       {loading ? <p className="activity-log__empty">활동 로그를 불러오는 중입니다.</p> : null}
       {error ? <p className="activity-log__empty">{error}</p> : null}
-      {!loading && !error && entries.length === 0 ? <p className="activity-log__empty">최근 30일 동안 기록된 활동이 없습니다.</p> : null}
+      {!loading && !error && entries.length === 0 ? <p className="activity-log__empty">{selectedDate ? "선택한 날짜에 기록된 활동이 없습니다." : "최근 30일 동안 기록된 활동이 없습니다."}</p> : null}
       {!loading && !error && entries.length > 0 ? (
         <div className="activity-log__table-wrap">
           <table>
