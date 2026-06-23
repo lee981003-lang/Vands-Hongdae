@@ -117,7 +117,7 @@ export function nextBedStatus(status: BedStatus): BedStatus {
 // --- 달력 날짜 헬퍼 (KST 기준) ---
 // 시각·UTC 차이 없이 연·월·일만 비교하기 위해, 모든 날짜를 로컬 자정 Date로 정규화해 사용한다.
 
-const KST_PARTS = new Intl.DateTimeFormat("en-CA", {
+const KST_PARTS = new Intl.DateTimeFormat("en-US", {
   timeZone: "Asia/Seoul",
   year: "numeric",
   month: "2-digit",
@@ -126,9 +126,9 @@ const KST_PARTS = new Intl.DateTimeFormat("en-CA", {
 
 /** KST 기준 "오늘"을 로컬 자정 Date로 반환한다. */
 export function kstToday(): Date {
-  // en-CA 로케일은 YYYY-MM-DD 형식을 보장한다.
-  const [year, month, day] = KST_PARTS.format(new Date()).split("-").map(Number);
-  return new Date(year, month - 1, day);
+  const parts = KST_PARTS.formatToParts(new Date());
+  const get = (type: Intl.DateTimeFormatPartTypes) => Number(parts.find((p) => p.type === type)?.value);
+  return new Date(get("year"), get("month") - 1, get("day"));
 }
 
 /** 시각 정보를 제거한 로컬 자정 Date로 정규화한다. */

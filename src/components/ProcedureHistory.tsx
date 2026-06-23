@@ -16,8 +16,8 @@ export function ProcedureHistory() {
   return (
     <section className="procedure-history" role="tabpanel" aria-label="시술 기록">
       <div className="procedure-history__heading">
-        <h1>시술 기록</h1>
-        <p>조회 기간을 선택하세요. 기간은 최근 30일 내에서 선택할 수 있어요.</p>
+        <h1>조회 기간을 선택하세요</h1>
+        <p>기간은 최근 30일 내에서 선택할 수 있어요.</p>
       </div>
 
       <DateRangePicker
