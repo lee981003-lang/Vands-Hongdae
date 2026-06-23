@@ -76,9 +76,7 @@ function DashboardShell({ role, onSignOut }: { role: AppRole; onSignOut: () => P
           loading={beds.loading}
           now={now}
           onSetStatus={beds.setStatus}
-          onSetFlags={beds.setFlags}
           onSetFollowUp={beds.setFollowUp}
-          onSetMemo={beds.setMemo}
         />
       ) : activeTab === "accounts" ? (
         <AdminAccounts />

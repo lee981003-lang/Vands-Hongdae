@@ -2,7 +2,7 @@ import { Wifi, WifiOff } from "lucide-react";
 import { RoomSection } from "./RoomSection";
 import { SidePanel } from "./SidePanel";
 import { elapsedMinutes, warningLevel } from "../lib/time";
-import type { Bed, BedFlagsInput, BedMemoInput, BedStatus, ConnectionState, Room, RoomWithBeds } from "../types";
+import type { Bed, BedStatus, ConnectionState, Room, RoomWithBeds } from "../types";
 
 interface DashboardProps {
   rooms: Room[];
@@ -11,9 +11,7 @@ interface DashboardProps {
   loading: boolean;
   now: number;
   onSetStatus: (bed: Bed, status: BedStatus) => Promise<void>;
-  onSetFlags: (bed: Bed, input: BedFlagsInput) => Promise<void>;
   onSetFollowUp: (bed: Bed, isFollowUp: boolean) => Promise<void>;
-  onSetMemo: (bed: Bed, input: BedMemoInput) => Promise<void>;
 }
 
 function buildRooms(rooms: Room[], beds: Bed[]): RoomWithBeds[] {
@@ -39,9 +37,7 @@ export function Dashboard({
   loading,
   now,
   onSetStatus,
-  onSetFlags,
   onSetFollowUp,
-  onSetMemo,
 }: DashboardProps) {
   const groupedRooms = buildRooms(rooms, beds);
   const isConnected = connection === "live";
@@ -72,9 +68,7 @@ export function Dashboard({
               room={room}
               now={now}
               onSetStatus={onSetStatus}
-              onSetFlags={onSetFlags}
               onSetFollowUp={onSetFollowUp}
-              onSetMemo={onSetMemo}
             />
           ))}
         </section>

@@ -5,7 +5,6 @@ export const STATUS_OPTIONS = [
 ] as const;
 
 export type BedStatus = (typeof STATUS_OPTIONS)[number]["value"];
-export type FlagStatus = "none" | "pending" | "done";
 export type ConnectionState = "local" | "connecting" | "live" | "error";
 
 export interface Room {
@@ -24,22 +23,10 @@ export interface Bed {
   waiting_started_at: string | null;
   customer_name: string | null;
   treatment_name: string | null;
-  prescription_status: FlagStatus;
-  postpay_status: FlagStatus;
   is_follow_up: boolean;
-  memo: string | null;
   updated_at: string;
 }
 
 export interface RoomWithBeds extends Room {
   beds: Bed[];
-}
-
-export interface BedFlagsInput {
-  prescriptionStatus: FlagStatus;
-  postpayStatus: FlagStatus;
-}
-
-export interface BedMemoInput {
-  memo: string;
 }

@@ -3,4 +3,5 @@ dist
 vite-dev.*.log
 .env
 .env.local
+.netlify/
 .DS_Store

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { fallbackBeds, fallbackRooms } from "../data/fallbackBeds";
 import { hasSupabaseConfig, supabase } from "../lib/supabase";
 import { applyLocalStatus } from "../lib/time";
-import type { Bed, BedFlagsInput, BedMemoInput, BedStatus, ConnectionState, Room } from "../types";
+import type { Bed, BedStatus, ConnectionState, Room } from "../types";
 
 type MessageTone = "info" | "success" | "error";
 
@@ -110,33 +110,6 @@ export function useBeds() {
     [beds, showMessage, updateBed],
   );
 
-  const setFlags = useCallback(
-    async (bed: Bed, input: BedFlagsInput) => {
-      const now = new Date().toISOString();
-      const previous = beds;
-      updateBed(bed.id, (current) => ({
-        ...current,
-        prescription_status: input.prescriptionStatus,
-        postpay_status: input.postpayStatus,
-        updated_at: now,
-      }));
-
-      if (!supabase) return;
-
-      const { error } = await supabase.rpc("set_bed_flags", {
-        p_bed_id: bed.id,
-        p_prescription_status: input.prescriptionStatus,
-        p_postpay_status: input.postpayStatus,
-      });
-
-      if (error) {
-        setBeds(previous);
-        showMessage(getErrorMessage(error), "error");
-      }
-    },
-    [beds, showMessage, updateBed],
-  );
-
   const setFollowUp = useCallback(
     async (bed: Bed, isFollowUp: boolean) => {
       const now = new Date().toISOString();
@@ -162,33 +135,6 @@ export function useBeds() {
     [beds, showMessage, updateBed],
   );
 
-  const setMemo = useCallback(
-    async (bed: Bed, input: BedMemoInput) => {
-      const now = new Date().toISOString();
-      const previous = beds;
-      updateBed(bed.id, (current) => ({
-        ...current,
-        memo: input.memo.trim() || null,
-        updated_at: now,
-      }));
-
-      if (!supabase) return;
-
-      const { error } = await supabase.rpc("set_bed_memo", {
-        p_bed_id: bed.id,
-        p_memo: input.memo.trim() || null,
-      });
-
-      if (error) {
-        setBeds(previous);
-        showMessage(getErrorMessage(error), "error");
-      } else {
-        showMessage("메모가 저장되었습니다.", "success");
-      }
-    },
-    [beds, showMessage, updateBed],
-  );
-
   return useMemo(
     () => ({
       rooms,
@@ -200,9 +146,7 @@ export function useBeds() {
       refresh,
       clearMessage,
       setStatus,
-      setFlags,
       setFollowUp,
-      setMemo,
     }),
     [
       rooms,
@@ -214,9 +158,7 @@ export function useBeds() {
       refresh,
       clearMessage,
       setStatus,
-      setFlags,
       setFollowUp,
-      setMemo,
     ],
   );
 }

@@ -1,4 +1,4 @@
-import type { Bed, BedStatus, FlagStatus } from "../types";
+import type { Bed, BedStatus } from "../types";
 
 const WARNING_MINUTES = 15;
 const CRITICAL_MINUTES = 30;
@@ -102,11 +102,6 @@ export function statusLabel(status: BedStatus) {
   return "빈 룸";
 }
 
-export function nextFlagStatus(status: FlagStatus): FlagStatus {
-  if (status === "none") return "pending";
-  if (status === "pending") return "done";
-  return "none";
-}
 
 export function nextBedStatus(status: BedStatus): BedStatus {
   if (status === "empty") return "waiting";
@@ -167,10 +162,7 @@ export function applyLocalStatus(bed: Bed, status: BedStatus): Bed {
       waiting_started_at: null,
       customer_name: null,
       treatment_name: null,
-      prescription_status: "none",
-      postpay_status: "none",
       is_follow_up: false,
-      memo: null,
       updated_at: now,
     };
   }

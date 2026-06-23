@@ -29,10 +29,7 @@ export const fallbackBeds: Bed[] = roomSpecs.flatMap(([roomId, , labels]) =>
       waiting_started_at: null,
       customer_name: null,
       treatment_name: null,
-      prescription_status: "none",
-      postpay_status: "none",
       is_follow_up: false,
-      memo: null,
       updated_at: sampleStartedAt(0),
     } satisfies Bed;
 
@@ -43,8 +40,6 @@ export const fallbackBeds: Bed[] = roomSpecs.flatMap(([roomId, , labels]) =>
         status_started_at: sampleStartedAt(18),
         customer_name: "김민지",
         treatment_name: "리프팅",
-        prescription_status: "pending",
-        memo: "원장 확인",
       } satisfies Bed;
     }
 
@@ -57,7 +52,6 @@ export const fallbackBeds: Bed[] = roomSpecs.flatMap(([roomId, , labels]) =>
         is_follow_up: true,
         customer_name: "이서연",
         treatment_name: "토닝",
-        postpay_status: "pending",
       } satisfies Bed;
     }
 
