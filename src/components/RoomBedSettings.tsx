@@ -254,6 +254,10 @@ export function RoomBedSettings({ rooms, beds, loading, refresh }: RoomBedSettin
   };
 
   const deleteBed = async (bed: Bed) => {
+    if (bed.status !== "empty") {
+      showMessage("현재 시술중/시술대기 데이터가 있어 삭제할 수 없습니다.", "error");
+      return;
+    }
     if (!window.confirm(`'${bed.label}' 베드를 삭제할까요?`)) return;
     await run(`delete-bed-${bed.id}`, "delete_bed", { p_bed_id: bed.id }, "베드를 삭제했습니다.");
   };
