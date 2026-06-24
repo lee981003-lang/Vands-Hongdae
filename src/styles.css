@@ -577,6 +577,17 @@ p {
   font-weight: 900;
 }
 
+.side-panel-section + .side-panel-section {
+  margin-top: 20px;
+}
+
+.side-panel-section h3 {
+  margin-bottom: 10px;
+  color: #475467;
+  font-size: 13px;
+  font-weight: 900;
+}
+
 .side-list {
   display: flex;
   flex-direction: column;
