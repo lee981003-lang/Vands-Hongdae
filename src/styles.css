@@ -550,6 +550,23 @@ p {
   gap: 10px;
 }
 
+.side-list-more {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 10px;
+  border: 1px solid #d9dee8;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #475467;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.side-list-more:hover {
+  border-color: #b8c2d1;
+  background: #f8fafc;
+}
+
 .side-list-item {
   display: grid;
   grid-template-columns: 42px minmax(0, 1fr) auto;
