@@ -11,6 +11,7 @@ export interface Room {
   id: string;
   name: string;
   sort_order: number;
+  name_tag_color: string | null;
 }
 
 export interface Bed {

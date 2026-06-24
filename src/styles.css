@@ -278,45 +278,24 @@ p {
   position: absolute;
   top: -17px;
   left: 28px;
+  max-width: calc(100% - 40px);
   display: inline-flex;
   align-items: center;
   min-height: 30px;
   border-radius: 8px;
-  padding: 0 12px;
-  background: #ffffff;
+  padding: 4px 12px;
+  background: var(--tag-bg, #ffffff);
+  color: var(--tag-fg, #1f2937);
   box-shadow: 0 8px 18px rgba(17, 24, 39, 0.06);
 }
 
 .room-heading h2 {
   font-size: 17px;
-  line-height: 1;
+  line-height: 1.15;
   font-weight: 900;
-}
-
-.room-section--vip .room-heading {
-  color: #7c3aed;
-  background: #f3e8ff;
-}
-
-.room-section--hair .room-heading {
-  color: #006cff;
-  background: #e8f1ff;
-}
-
-.room-section--treatment .room-heading {
-  color: #f15a24;
-  background: #fff0e8;
-}
-
-.room-section--laser .room-heading,
-.room-section--care .room-heading {
-  color: #10a23c;
-  background: #e9f9ed;
-}
-
-.room-section--care .room-heading {
-  color: #f97316;
-  background: #fff1e6;
+  color: inherit;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .bed-grid {
@@ -1267,6 +1246,44 @@ button:focus-visible {
   display: flex;
   flex-shrink: 0;
   gap: 4px;
+}
+
+.rbs-column__colors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.rbs-swatch {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  border: 1px solid rgba(17, 24, 39, 0.18);
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.rbs-swatch--reset {
+  background: #ffffff;
+  color: #6b7280;
+}
+
+.rbs-swatch--active {
+  outline: 2px solid #4c1d95;
+  outline-offset: 1px;
+  border-color: #4c1d95;
+}
+
+.rbs-swatch:disabled {
+  cursor: default;
+  opacity: 0.6;
 }
 
 .rbs-column__cards {

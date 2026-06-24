@@ -45,7 +45,7 @@ export function useBeds() {
     setLoading(true);
     try {
       const [roomsResult, bedsResult] = await Promise.all([
-        supabase.from("rooms").select("id,name,sort_order").order("sort_order", { ascending: true }),
+        supabase.from("rooms").select("id,name,sort_order,name_tag_color").order("sort_order", { ascending: true }),
         supabase.from("beds").select("*").order("sort_order", { ascending: true }),
       ]);
 

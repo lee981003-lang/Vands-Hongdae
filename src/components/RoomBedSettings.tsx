@@ -1,6 +1,7 @@
 import { FormEvent, PointerEvent as ReactPointerEvent, useRef, useState } from "react";
 import { supabase } from "../lib/supabase";
 import type { Bed, Room } from "../types";
+import { ROOM_TAG_PALETTE } from "../roomTagPalette";
 import { Toast } from "./Toast";
 
 type RoomBedSettingsProps = {
@@ -152,6 +153,11 @@ export function RoomBedSettings({ rooms, beds, loading, refresh }: RoomBedSettin
     if (overIndex !== state.dragIndex) {
       void moveRoom(state.dragIndex, overIndex);
     }
+  };
+
+  const setRoomColor = async (room: Room, color: string | null) => {
+    if (room.name_tag_color === color) return;
+    await run(`set-room-color-${room.id}`, "set_room_color", { p_room_id: room.id, p_color: color }, "룸 색상을 변경했습니다.");
   };
 
   const deleteRoom = async (room: Room) => {
@@ -315,6 +321,38 @@ export function RoomBedSettings({ rooms, beds, loading, refresh }: RoomBedSettin
                   <button className="rbs-icon-btn rbs-icon-btn--danger" type="button" onClick={() => void deleteRoom(room)} disabled={pending !== null} title="룸 삭제" aria-label="룸 삭제">×</button>
                 </div>
               </header>
+
+              <div className="rbs-column__colors" role="group" aria-label="이름칸 색상 선택">
+                <button
+                  type="button"
+                  className={`rbs-swatch rbs-swatch--reset${room.name_tag_color === null ? " rbs-swatch--active" : ""}`}
+                  onClick={() => void setRoomColor(room, null)}
+                  disabled={pending !== null}
+                  title="기본색"
+                  aria-label="기본색"
+                  aria-pressed={room.name_tag_color === null}
+                >
+                  ⦸
+                </button>
+                {ROOM_TAG_PALETTE.map((swatch) => {
+                  const active = (room.name_tag_color ?? "").toLowerCase() === swatch.bg;
+                  return (
+                    <button
+                      key={swatch.bg}
+                      type="button"
+                      className={`rbs-swatch${active ? " rbs-swatch--active" : ""}`}
+                      style={{ background: swatch.bg, color: swatch.fg }}
+                      onClick={() => void setRoomColor(room, swatch.bg)}
+                      disabled={pending !== null}
+                      title={swatch.label}
+                      aria-label={swatch.label}
+                      aria-pressed={active}
+                    >
+                      가
+                    </button>
+                  );
+                })}
+              </div>
 
               <div className="rbs-column__cards">
                 {roomBeds.length === 0 ? (
